@@ -3,7 +3,7 @@ name: Deploy Spring Boot to EC2
 on:
   push:
     branches:
-      - main  # 배포할 브랜치 이름
+      - main  # 배포할 브랜치
 
 jobs:
   deploy:
@@ -13,6 +13,15 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Build with Gradle (Run Tests)
+        run: ./gradlew clean build
+
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
@@ -20,15 +29,14 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Copy project to EC2
+      - name: Copy jar to EC2
         run: |
-          rsync -avz --exclude='.git' -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" . ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_PROJECT_PATH }}
+          scp -i ~/.ssh/id_rsa build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_PROJECT_PATH }}
 
-      - name: Build and run Spring Boot on EC2
+      - name: Run Spring Boot on EC2
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+            pkill -f 'submate-0.0.1-SNAPSHOT.jar' || true
             cd ${{ secrets.EC2_PROJECT_PATH }}
-            ./gradlew build -x test
-            pkill -f 'java -jar' || true
-            nohup java -jar build/libs/*.jar > app.log 2>&1 &
+            nohup java -jar submate-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
           EOF
