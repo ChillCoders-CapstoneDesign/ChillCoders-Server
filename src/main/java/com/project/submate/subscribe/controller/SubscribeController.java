@@ -17,6 +17,6 @@ public class SubscribeController {
     @Operation(summary = "구독 이름 검색", description = "입력한 이름으로 구독 서비스를 검색한다.")
     @GetMapping("/search")
     public List<SubscribeSearchResponseDto> searchByName(@RequestParam String name) {
-        return null; 
+        return null;
     }
 }
