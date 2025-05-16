@@ -3,24 +3,24 @@ name: Deploy Spring Boot to EC2
 on:
   push:
     branches:
-      - main  # main 브랜치에 push 될 때만 실행
+      - main  # 배포할 브랜치: main 브랜치에 push 될 때만 이 워크플로가 실행됨
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # GitHub Actions 실행 환경
+    runs-on: ubuntu-latest # GitHub Actions가 실행될 환경 (Ubuntu 최신 버전)
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3  # GitHub 리포지토리 코드를 가져옴
+        uses: actions/checkout@v3 # GitHub 리포지토리의 코드를 가져옴 (clone과 같은 역할)
 
       - name: Set up JDK
-        uses: actions/setup-java@v3  # Java 환경 세팅
+        uses: actions/setup-java@v3 # Java 환경 세팅
         with:
-          java-version: '21'
+          java-version: '21' # 사용할 자바 버전
           distribution: 'corretto'
 
       - name: Build with Gradle (Run Tests)
-        run: ./gradlew clean build  # Gradle로 전체 프로젝트를 빌드
+        run: ./gradlew clean build  # Gradle로 전체 프로젝트를 클린하고 테스트 포함해서 빌드
 
       - name: Set up SSH key
         run: |
@@ -34,34 +34,9 @@ jobs:
           scp -i ~/.ssh/id_rsa build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_PROJECT_PATH }}
 
       - name: Run Spring Boot on EC2
-        env:
-          RDS_URL: ${{ secrets.RDS_URL }}
-          RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
-          RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            # 실행 중인 서버가 있다면 종료
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
             pkill -f 'submate-0.0.1-SNAPSHOT.jar' || true
             cd ${{ secrets.EC2_PROJECT_PATH }}
-
-            # application.yml 생성
-            cat <<EOL > application.yml
-spring:
-  datasource:
-    url: "$RDS_URL"
-    username: "$RDS_USERNAME"
-    password: "$RDS_PASSWORD"
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate.format_sql: true
-    database-platform: org.hibernate.dialect.MySQLDialect
-EOL
-  
-  # 서버 실행
-  nohup java -jar submate-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-EOF
+            nohup java -jar submate-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+          EOF
