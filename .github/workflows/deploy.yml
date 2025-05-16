@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v3  # GitHub 리포지토리 코드를 가져옴
 
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v3  # Java 환경 세팅
         with:
           java-version: '21'
           distribution: 'corretto'
@@ -39,17 +39,18 @@ jobs:
           RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
           RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             # 실행 중인 서버가 있다면 종료
             pkill -f 'submate-0.0.1-SNAPSHOT.jar' || true
             cd ${{ secrets.EC2_PROJECT_PATH }}
 
             # application.yml 생성
-            echo "spring:
+            cat <<EOL > application.yml
+spring:
   datasource:
-    url: \"$RDS_URL\"
-    username: \"$RDS_USERNAME\"
-    password: \"$RDS_PASSWORD\"
+    url: "$RDS_URL"
+    username: "$RDS_USERNAME"
+    password: "$RDS_PASSWORD"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -59,8 +60,8 @@ jobs:
     properties:
       hibernate.format_sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
-" > application.yml
-
-# 서버 실행
-nohup java -jar submate-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+EOL
+  
+  # 서버 실행
+  nohup java -jar submate-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
 EOF
