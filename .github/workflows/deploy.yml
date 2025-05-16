@@ -40,12 +40,12 @@ jobs:
             cd ${{ secrets.EC2_PROJECT_PATH }}
 
 #          application.yml 실행
-            cat > application.yml << EOL
+            cat << 'EOL' > application.yml
 spring:
   datasource:
-    url: ${{ secrets.RDS_URL }}
-    username: ${{ secrets.RDS_USERNAME }}
-    password: ${{ secrets.RDS_PASSWORD }}
+    url: "${{ secrets.RDS_URL }}"
+    username: "${{ secrets.RDS_USERNAME }}"
+    password: "${{ secrets.RDS_PASSWORD }}"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
