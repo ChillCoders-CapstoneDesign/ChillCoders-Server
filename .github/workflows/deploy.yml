@@ -19,6 +19,18 @@ jobs:
           java-version: '21' # 사용할 자바 버전
           distribution: 'corretto'
 
+      - name: Generate application.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "spring:" > src/main/resources/application.yml
+          echo "  datasource:" >> src/main/resources/application.yml
+          echo "    url: ${{ secrets.RDS_URL }}" >> src/main/resources/application.yml
+          echo "    username: ${{ secrets.RDS_USERNAME }}" >> src/main/resources/application.yml
+          echo "    password: ${{ secrets.RDS_PASSWORD }}" >> src/main/resources/application.yml
+          echo "  jpa:" >> src/main/resources/application.yml
+          echo "    hibernate:" >> src/main/resources/application.yml
+          echo "      ddl-auto: update" >> src/main/resources/application.yml
+
       - name: Build with Gradle (Run Tests)
         run: ./gradlew clean build  # Gradle로 전체 프로젝트를 클린하고 테스트 포함해서 빌드
 
