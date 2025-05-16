@@ -59,8 +59,8 @@ jobs:
     properties:
       hibernate.format_sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
-  " > application.yml
+" > application.yml
 
-  # 서버 실행
-  nohup java -jar submate-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-  EOF
+# 서버 실행
+nohup java -jar submate-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+EOF
