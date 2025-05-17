@@ -34,10 +34,10 @@ public class Subscribe {
     private Integer price;
 
     @Column(name = "PRICE_UNIT", length = 1)
-    private String priceUnit; // 예: ₩, $
+    private String priceUnit; // 예: ₩(원), $
 
-    @Column(name = "PERIOD", length = 1)
-    private String period; // 예: 1
+    @Column(name = "PERIOD", length = 2)
+    private Integer period; // 예: 1, 12
 
     @Column(name = "PERIOD_UNIT", length = 1)
     private String periodUnit; // 예: 월, 년
