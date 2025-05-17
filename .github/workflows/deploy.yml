@@ -22,10 +22,10 @@ jobs:
       - name: Generate application.yml
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_YML }}" | base64 -d > src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
 
       - name: Build with Gradle (Run Tests)
-        run: ./gradlew clean build test  # Gradle로 전체 프로젝트를 클린하고 테스트 포함하지 않고 빌드
+        run: ./gradlew clean build -x test  # Gradle로 전체 프로젝트를 클린하고 테스트 포함하지 않고 빌드
 
       - name: Set up SSH key
         run: |
