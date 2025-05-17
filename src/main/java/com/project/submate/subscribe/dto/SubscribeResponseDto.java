@@ -14,7 +14,7 @@ public class SubscribeResponseDto {
     private String image;
     private Integer price;
     private String priceUnit;
-    private String period;
+    private Integer period;
     private String periodUnit;
     private LocalDate startDate;
     private String isCollect;
