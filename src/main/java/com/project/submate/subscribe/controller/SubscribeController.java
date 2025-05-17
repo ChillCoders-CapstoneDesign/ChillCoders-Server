@@ -1,5 +1,6 @@
 package com.project.submate.subscribe.controller;
 
+import com.project.submate.subscribe.dto.SubscribeResponseDto;
 import com.project.submate.subscribe.dto.SubscribeSearchResponseDto;
 import com.project.submate.subscribe.entity.Subscribe;
 import com.project.submate.subscribe.repository.SubscribeRepository;
@@ -22,8 +23,11 @@ public class SubscribeController {
     private final SubscribeRepository subscribeRepository;
 
     @GetMapping("/list")
-    public List<Subscribe> getAllSubscribe(){
-        return subscribeRepository.findAll();
+    public List<SubscribeResponseDto> getAllSubscribe(){
+        return subscribeRepository.findAll()
+                .stream()
+                .map(SubscribeResponseDto::from)
+                .toList();
     }
 
     @Operation(summary = "구독 이름 검색", description = "입력한 이름으로 구독 서비스를 검색한다.")
