@@ -1,5 +1,6 @@
 package com.project.submate.subscribe.controller;
 
+import com.project.submate.subscribe.dto.SubscribeRequestDto;
 import com.project.submate.subscribe.dto.SubscribeResponseDto;
 import com.project.submate.subscribe.dto.SubscribeSearchResponseDto;
 import com.project.submate.subscribe.entity.Subscribe;
@@ -36,13 +37,20 @@ public class SubscribeController {
     public SubscribeResponseDto getBySubscribeNo(@PathVariable Integer subscribeNo){
         Subscribe subscribe = subscribeService.findBySubscribeNo(subscribeNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 구독 서비스가 없습니다."));
+//        해야할 것: 해당 구독서비스 없을 때 에러처리 하기
         return SubscribeResponseDto.from(subscribe);
     }
 
 
-//    구독서비스 기존 정보 바탕으로 저장/등록
-//    @Operation(summary = "구독 서비스 기존 등록", description = "기존 데이터를 바탕으로 구독 서비스를 등록한다.")
-//    @PutMapping("/")
+//    구독서비스 기존 정보 바탕으로 저장/등록(즉, 수정)
+    @Operation(summary = "구독 서비스 기존 등록", description = "기존 데이터를 바탕으로 구독 서비스를 등록/수정한다.")
+    @PutMapping("/{subscribeNo}")
+    public SubscribeResponseDto updateSubscribe(
+            @PathVariable Integer subscribeNo,
+            @RequestBody SubscribeRequestDto subscribeRequestDto){
+        Subscribe updateInfo = subscribeService.update(subscribeNo, subscribeRequestDto);
+        return SubscribeResponseDto.from(updateInfo);
+    }
 
 //    구독서비스 검색
 //    @Operation(summary = "구독 서비스 이름 검색", description = "입력한 이름으로 구독 서비스를 검색한다.")
