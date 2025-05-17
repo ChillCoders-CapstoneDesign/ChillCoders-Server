@@ -37,3 +37,8 @@ out/
 .vscode/
 
 /src/main/resources/application.yml
+
+# Spring Boot fat JAR 내부 구조가 깃에 올라가지 않도록
+BOOT-INF/
+META-INF/
+org/springframework/
