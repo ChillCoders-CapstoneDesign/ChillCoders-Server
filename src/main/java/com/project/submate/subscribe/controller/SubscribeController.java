@@ -9,6 +9,7 @@ import com.project.submate.subscribe.service.SubscribeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,6 +51,13 @@ public class SubscribeController {
             @RequestBody SubscribeRequestDto subscribeRequestDto){
         Subscribe updateInfo = subscribeService.update(subscribeNo, subscribeRequestDto);
         return SubscribeResponseDto.from(updateInfo);
+    }
+
+//    구독서비스 새로 등록
+    @PostMapping("/create")
+    public ResponseEntity<SubscribeResponseDto> create(@RequestBody SubscribeRequestDto subscribeRequestDto){
+        Subscribe saved = subscribeService.save(subscribeRequestDto);
+        return ResponseEntity.ok(SubscribeResponseDto.from(saved));
     }
 
 //    구독서비스 검색
