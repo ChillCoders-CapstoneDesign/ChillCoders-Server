@@ -53,7 +53,7 @@ public class SubscribeService {
             category = categoryRepository.findById(subscribeRequestDto.getCategoryNo())
                     .orElseThrow(() -> new IllegalArgumentException("해당 카테고리는 존재하지 않습니다."));
 
-            // 새로운 서비스를 등록할 때 카테고리 매핑 
+            // 새로운 서비스를 등록할 때 카테고리 매핑
             ServiceInfo serviceInfo = ServiceInfo.builder()
                     .serviceName(subscribeRequestDto.getName())
                     .category(category)
