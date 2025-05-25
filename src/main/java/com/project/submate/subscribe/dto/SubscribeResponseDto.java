@@ -1,5 +1,6 @@
 package com.project.submate.subscribe.dto;
 
+import com.project.submate.category.entity.Category;
 import com.project.submate.subscribe.entity.Subscribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class SubscribeResponseDto {
     private String periodUnit;
     @Schema(description = "구독 시작 날짜", example = "2025-05-17")
     private LocalDate startDate;
+    private Integer categoryNo;
 //    private String isCollect;
 
     public static SubscribeResponseDto from(Subscribe s) {
@@ -38,7 +40,8 @@ public class SubscribeResponseDto {
                 s.getPriceUnit(),
                 s.getPeriod(),
                 s.getPeriodUnit(),
-                s.getStartDate()
+                s.getStartDate(),
+                s.getCategory().getCategoryNo()
 //                s.getIsCollect()
         );
     }
