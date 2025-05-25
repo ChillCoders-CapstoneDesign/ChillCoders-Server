@@ -18,6 +18,8 @@ public class SubscribeRequestDto {
     private String periodUnit;
     private LocalDate startDate;
 
+    private Integer categoryNo;
+
     public void updateSubscribeInfo(Subscribe subscribe){
         subscribe.setSubscribeName(this.name);
         subscribe.setImage(this.image);
