@@ -61,12 +61,7 @@ public class SubscribeResponseDto {
     }
 
     public static SubscribeResponseDto from(Subscribe s) {
-//        int dDay = (int) ChronoUnit.DAYS.between(LocalDate.now(), s.getStartDate().plusMonths(1));
-//        return from(s, dDay);
-        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        LocalDate baseDate = s.getStartDate().plusMonths(1);
-        int dDay = (int) ChronoUnit.DAYS.between(now, baseDate);
-
+        int dDay = (int) ChronoUnit.DAYS.between(LocalDate.now(), s.getStartDate().plusMonths(1));
         return from(s, dDay);
     }
 
