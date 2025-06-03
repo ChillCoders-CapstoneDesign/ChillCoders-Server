@@ -50,4 +50,9 @@ public class SubscribeResponseDto {
 //                s.getIsCollect()
         );
     }
+
+    public static SubscribeResponseDto from(Subscribe s) {
+        int dDay = (int) ChronoUnit.DAYS.between(LocalDate.now(), s.getStartDate().plusMonths(1));
+        return from(s, dDay);
+    }
 }
