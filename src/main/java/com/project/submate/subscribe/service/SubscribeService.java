@@ -30,7 +30,7 @@ public class SubscribeService {
 
     public List<SubscribeResponseDto> subscribeAllList() {
 //        return subscribeRepository.findAllByUserId(1);
-        List<Subscribe> subscribe = subscribeRepository.findAllByUserIdAndIsDeletedFalse(1);
+        List<Subscribe> subscribe = subscribeRepository.findAllByUserId(1);
         return subscribe.stream()
                 .map(sub -> {
                     int dDay = calculateDday(sub.getStartDate());
