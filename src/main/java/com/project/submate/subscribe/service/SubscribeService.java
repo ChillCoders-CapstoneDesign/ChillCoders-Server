@@ -25,15 +25,15 @@ public class SubscribeService {
     private final CategoryRepository categoryRepository;
 
     public List<Subscribe> subscribeAllList() {
-        return subscribeRepository.findAll();
+        return subscribeRepository.findAllByUserId(1);
     }
 
     public Optional<Subscribe> findBySubscribeNo(Integer subscribeNo) {
-        return subscribeRepository.findBySubscribeNo(subscribeNo);
+        return subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1);
     }
 
     public Subscribe update(Integer subscribeNo, SubscribeRequestDto subscribeRequestDto) {
-        Subscribe subscribe = subscribeRepository.findBySubscribeNo(subscribeNo)
+        Subscribe subscribe = subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1)
                 .orElseThrow(() -> new IllegalArgumentException("해당 구독이 없습니다."));
         subscribeRequestDto.updateSubscribeInfo(subscribe); // 값 수정
         return subscribeRepository.save(subscribe);
@@ -72,6 +72,7 @@ public class SubscribeService {
                 .startDate(subscribeRequestDto.getStartDate())
                 .isCollect("N")
                 .category(category)
+                .userId(1) //userId 1로 하드코딩
                 .build();
 
         return subscribeRepository.save(subscribe);

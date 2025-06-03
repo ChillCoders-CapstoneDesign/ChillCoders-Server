@@ -24,6 +24,10 @@ public class Subscribe {
     @JoinColumn(name = "CATEGORY_NO", nullable = false)
     private Category category;
 
+//    userId 하드코딩해서 적음(로그인 기능 아직 X)
+    @Column(name = "USER_ID", nullable = false)
+    private Integer userId;
+
     @Column(name = "SUBSCRIBE_NAME", length = 15, nullable = false)
     private String subscribeName;
 
