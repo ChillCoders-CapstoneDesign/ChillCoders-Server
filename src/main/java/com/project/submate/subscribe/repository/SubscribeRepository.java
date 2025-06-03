@@ -11,5 +11,5 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Integer> {
 
     Optional<Subscribe> findBySubscribeNo(Integer subscribeNo);
 
-    Optional<Subscribe> findBySubscribeNoAndUserId(Integer subscribeNo, Integer userId);
+//    Optional<Subscribe> findBySubscribeNoAndUserId(Integer subscribeNo, Integer userId);
 }
