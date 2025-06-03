@@ -101,10 +101,10 @@ public class SubscribeService {
         return subscribeRepository.save(subscribe);
     }
 
-    public void delete(Integer subscribeNo) {
-        Subscribe subscribe = subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1)
-                .orElseThrow(() -> new IllegalArgumentException("삭제할 구독 정보가 없습니다."));
-        subscribe.setDeleted(true); // 실제 삭제가 아닌, DB 정보만 isDeleted를 true로 한다.
-        subscribeRepository.save(subscribe);
-    }
+//    public void delete(Integer subscribeNo) {
+//        Subscribe subscribe = subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1)
+//                .orElseThrow(() -> new IllegalArgumentException("삭제할 구독 정보가 없습니다."));
+//        subscribe.setDeleted(true); // 실제 삭제가 아닌, DB 정보만 isDeleted를 true로 한다.
+//        subscribeRepository.save(subscribe);
+//    }
 }
