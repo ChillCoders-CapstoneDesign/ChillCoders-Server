@@ -30,7 +30,7 @@ public class SubscribeService {
 
     public List<SubscribeResponseDto> subscribeAllList() {
 //        return subscribeRepository.findAllByUserId(1);
-        List<Subscribe> subscribe = subscribeRepository.findAllByUserId(1);
+        List<Subscribe> subscribe = subscribeRepository.findAllByUserIdAndIsDeletedFalse(1);
         return subscribe.stream()
                 .map(sub -> {
                     int dDay = calculateDday(sub.getStartDate());
@@ -102,10 +102,9 @@ public class SubscribeService {
     }
 
     public void delete(Integer subscribeNo) {
-        Subscribe subscribe = subscribeRepository
-                .findBySubscribeNoAndUserId(subscribeNo, 1)
-                .orElseThrow(() -> new IllegalArgumentException("해당 구독이 없거나 삭제 권한이 없습니다."));
-
-        subscribeRepository.delete(subscribe);
+        Subscribe subscribe = subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1)
+                .orElseThrow(() -> new IllegalArgumentException("삭제할 구독 정보가 없습니다."));
+        subscribe.setDeleted(true); // 실제 삭제가 아닌, DB 정보만 isDeleted를 true로 한다.
+        subscribeRepository.save(subscribe);
     }
 }
