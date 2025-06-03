@@ -47,7 +47,7 @@ public class SubscribeService {
         LocalDate baseDate = startDate.plusMonths(1); // 기준일: startDate + 1달
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         int dDay = (int) ChronoUnit.DAYS.between(now, baseDate);
-        return Math.max(dDay - 1, 0);
+        return Math.max(dDay, 0); // 음수 방지 
     }
 
     public Optional<Subscribe> findBySubscribeNo(Integer subscribeNo) {
@@ -99,5 +99,13 @@ public class SubscribeService {
                 .build();
 
         return subscribeRepository.save(subscribe);
+    }
+
+    public void delete(Integer subscribeNo) {
+        Subscribe subscribe = subscribeRepository
+                .findBySubscribeNoAndUserId(subscribeNo, 1)
+                .orElseThrow(() -> new IllegalArgumentException("해당 구독이 없거나 삭제 권한이 없습니다."));
+
+        subscribeRepository.delete(subscribe);
     }
 }
