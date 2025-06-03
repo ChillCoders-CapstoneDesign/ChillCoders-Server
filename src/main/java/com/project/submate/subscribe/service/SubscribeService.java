@@ -29,7 +29,7 @@ public class SubscribeService {
     }
 
     public Optional<Subscribe> findBySubscribeNo(Integer subscribeNo) {
-        return subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1);
+        return subscribeRepository.findBySubscribeNo(subscribeNo);
     }
 
     public Subscribe update(Integer subscribeNo, SubscribeRequestDto subscribeRequestDto) {

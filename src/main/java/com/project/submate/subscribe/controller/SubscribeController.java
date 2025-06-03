@@ -32,7 +32,7 @@ public class SubscribeController {
                 .toList();
     }
 
-//    구독서비스 기존 정보 바탕 불러오기
+//    구독서비스 기존 정보 바탕 불러오기: 이 부분은 userId에 관계없이 db에 있는 것을 불러와야 하기 때문에 'findBySubscribeNo'를 사용한다.
     @Operation(summary = "기존 등록: 특정 구독 서비스 조회", description = "기존에 있는 구독 서비스를 등록/저장할 때 사용한다.")
     @GetMapping("/{subscribeNo}")
     public SubscribeResponseDto getBySubscribeNo(@PathVariable Integer subscribeNo){
@@ -54,6 +54,7 @@ public class SubscribeController {
     }
 
 //    구독서비스 새로 등록
+    @Operation(summary = "구독 서비스를 새로 등록", description = "기존 서비스에 없던 구독 서비스를 새로 등록한다.")
     @PostMapping("/create")
     public ResponseEntity<SubscribeResponseDto> create(@RequestBody SubscribeRequestDto subscribeRequestDto){
         Subscribe saved = subscribeService.save(subscribeRequestDto);
