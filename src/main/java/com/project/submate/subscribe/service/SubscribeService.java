@@ -33,7 +33,7 @@ public class SubscribeService {
     }
 
     public Subscribe update(Integer subscribeNo, SubscribeRequestDto subscribeRequestDto) {
-        Subscribe subscribe = subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1)
+        Subscribe subscribe = subscribeRepository.findBySubscribeNo(subscribeNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 구독이 없습니다."));
         subscribeRequestDto.updateSubscribeInfo(subscribe); // 값 수정
         subscribe.setUserId(1);
