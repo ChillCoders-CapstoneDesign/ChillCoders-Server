@@ -23,7 +23,7 @@ public class SubscribeController {
     private final SubscribeService subscribeService;
 
 //    구독서비스 목록조회(홈에서 사용할 부분들)
-    @Operation(summary = "구독 서비스 목록 조회", description = "본인이 등록한 구독 서비스를 조회한다.")
+    @Operation(summary = "구독 서비스 목록 조회", description = "본인(userId=1)이 등록한 구독 서비스를 조회한다.")
     @GetMapping("/list")
     public List<SubscribeResponseDto> getAllSubscribe(){
         return subscribeService.subscribeAllList();
@@ -33,7 +33,7 @@ public class SubscribeController {
     }
 
 //    구독서비스 기존 정보 바탕 불러오기: 이 부분은 userId에 관계없이 db에 있는 것을 불러와야 하기 때문에 'findBySubscribeNo'를 사용한다.
-    @Operation(summary = "기존 등록: 특정 구독 서비스 조회", description = "기존에 있는 구독 서비스를 등록/저장할 때 사용한다.")
+    @Operation(summary = "기존 등록: 특정 구독 서비스 조회(구독 번호로 조회)", description = "기존(DB에 저장되어 있는)에 있는 구독 서비스 정보를 불러온다")
     @GetMapping("/{subscribeNo}")
     public SubscribeResponseDto getBySubscribeNo(@PathVariable Integer subscribeNo){
         Subscribe subscribe = subscribeService.findBySubscribeNo(subscribeNo)
@@ -44,7 +44,7 @@ public class SubscribeController {
 
 
 //    구독서비스 기존 정보 바탕으로 저장/등록(즉, 수정)
-    @Operation(summary = "구독 서비스 기존 등록", description = "기존 데이터를 바탕으로 구독 서비스를 등록/수정한다.")
+    @Operation(summary = "구독 서비스 기존 등록", description = "기존 데이터를 바탕으로 사용자(userId=1)가 구독 서비스를 등록/수정한다.")
     @PutMapping("/{subscribeNo}")
     public SubscribeResponseDto updateSubscribe(
             @PathVariable Integer subscribeNo,
@@ -54,12 +54,22 @@ public class SubscribeController {
     }
 
 //    구독서비스 새로 등록
-    @Operation(summary = "구독 서비스를 새로 등록", description = "기존 서비스에 없던 구독 서비스를 새로 등록한다.")
+    @Operation(summary = "구독 서비스를 새로 등록", description = "기존 서비스에 없던 구독 서비스를 사용자(userId=1)가 새로 등록한다.")
     @PostMapping("/create")
     public ResponseEntity<SubscribeResponseDto> create(@RequestBody SubscribeRequestDto subscribeRequestDto){
         Subscribe saved = subscribeService.save(subscribeRequestDto);
         return ResponseEntity.ok(SubscribeResponseDto.from(saved));
     }
+
+//    구독서비스 삭제
+    @Operation(summary = "구독 서비스 삭제", description = "사용자(userId=1)의 특정 구독 서비스(구독 번호)를 삭제한다.")
+    @DeleteMapping("/{subscribeNo}")
+    public ResponseEntity<Void> deleteSubscribe(@PathVariable Integer subscribeNo) {
+        subscribeService.delete(subscribeNo);
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 //    구독서비스 검색
 //    @Operation(summary = "구독 서비스 이름 검색", description = "입력한 이름으로 구독 서비스를 검색한다.")
