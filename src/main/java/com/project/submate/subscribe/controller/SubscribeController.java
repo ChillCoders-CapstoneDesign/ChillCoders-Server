@@ -26,10 +26,10 @@ public class SubscribeController {
     @Operation(summary = "구독 서비스 목록 조회", description = "본인이 등록한 구독 서비스를 조회한다.")
     @GetMapping("/list")
     public List<SubscribeResponseDto> getAllSubscribe(){
-        return subscribeService.subscribeAllList()
-                .stream()
-                .map(SubscribeResponseDto::from)
-                .toList();
+        return subscribeService.subscribeAllList();
+//                .stream()
+//                .map(SubscribeResponseDto::from)
+//                .toList();
     }
 
 //    구독서비스 기존 정보 바탕 불러오기: 이 부분은 userId에 관계없이 db에 있는 것을 불러와야 하기 때문에 'findBySubscribeNo'를 사용한다.
