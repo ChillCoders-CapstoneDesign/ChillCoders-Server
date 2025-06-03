@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SubscribeRepository extends JpaRepository<Subscribe, Integer> {
-    List<Subscribe> findAllByUserIdAndIsDeletedFalse(Integer userId);
+//    List<Subscribe> findAllByUserIdAndIsDeletedFalse(Integer userId);
 
     List<Subscribe> findAllByUserId(Integer userId);
 
