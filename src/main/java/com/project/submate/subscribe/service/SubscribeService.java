@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -44,6 +45,7 @@ public class SubscribeService {
     private int calculateDday(LocalDate startDate) {
 //        LocalDate.plusMonths: 자동으로 월의 마지막 날짜를 고려하여 계산한다.
         LocalDate baseDate = startDate.plusMonths(1); // 기준일: startDate + 1달
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return (int) ChronoUnit.DAYS.between(LocalDate.now(), baseDate);
     }
 

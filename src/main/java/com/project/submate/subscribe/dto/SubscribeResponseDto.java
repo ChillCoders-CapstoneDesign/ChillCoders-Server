@@ -33,12 +33,17 @@ public class SubscribeResponseDto {
     private LocalDate startDate;
     private Integer categoryNo;
     @Schema(description = "디데이", example = "7")
-    @JsonProperty("dDay")
     private int dDay;
+    @Schema(description = "경과한(지난) 개월 수", example = "9")
+    private int passedMonth;
+
 
 //    private String isCollect;
 
     public static SubscribeResponseDto from(Subscribe s, int dDay) {
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        int passedMonth = calculateMonth(s.getStartDate(), now);
+
         return new SubscribeResponseDto(
                 s.getSubscribeNo(),
                 s.getSubscribeName(),
@@ -49,7 +54,8 @@ public class SubscribeResponseDto {
                 s.getPeriodUnit(),
                 s.getStartDate(),
                 s.getCategory().getCategoryNo(),
-                dDay
+                dDay,
+                passedMonth
 //                s.getIsCollect()
         );
     }
@@ -63,4 +69,9 @@ public class SubscribeResponseDto {
 
         return from(s, dDay);
     }
+
+    private static int calculateMonth(LocalDate startDate, LocalDate now) {
+        return (int) ChronoUnit.MONTHS.between(startDate.withDayOfMonth(1), now.withDayOfMonth(1));
+    }
+
 }
