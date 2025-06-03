@@ -49,8 +49,8 @@ public class Subscribe {
     @Column(name = "START_DATE")
     private LocalDate startDate;
 
-    @Column(name = "IS_DELETED")
-    private boolean isDeleted = false;
+//    @Column(name = "IS_DELETED")
+//    private boolean isDeleted = false;
 
     @Column(name = "IS_COLLECT", length = 1)
     private String isCollect; // Y or N

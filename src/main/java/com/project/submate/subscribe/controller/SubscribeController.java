@@ -62,12 +62,12 @@ public class SubscribeController {
     }
 
 //    구독서비스 삭제
-    @Operation(summary = "구독 서비스 삭제", description = "사용자(userId=1)의 특정 구독 서비스(구독 번호)를 삭제한다.")
-    @DeleteMapping("/{subscribeNo}")
-    public ResponseEntity<Void> deleteSubscribe(@PathVariable Integer subscribeNo) {
-        subscribeService.delete(subscribeNo);
-        return ResponseEntity.noContent().build();
-    }
+//    @Operation(summary = "구독 서비스 삭제", description = "사용자(userId=1)의 특정 구독 서비스(구독 번호)를 삭제한다.")
+//    @DeleteMapping("/{subscribeNo}")
+//    public ResponseEntity<Void> deleteSubscribe(@PathVariable Integer subscribeNo) {
+//        subscribeService.delete(subscribeNo);
+//        return ResponseEntity.noContent().build();
+//    }
 
 
 
