@@ -1,5 +1,6 @@
 package com.project.submate.subscribe.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.submate.category.entity.Category;
 import com.project.submate.subscribe.entity.Subscribe;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 @Getter
@@ -31,6 +33,7 @@ public class SubscribeResponseDto {
     private LocalDate startDate;
     private Integer categoryNo;
     @Schema(description = "디데이", example = "7")
+    @JsonProperty("dDay")
     private int dDay;
 
 //    private String isCollect;
@@ -52,7 +55,12 @@ public class SubscribeResponseDto {
     }
 
     public static SubscribeResponseDto from(Subscribe s) {
-        int dDay = (int) ChronoUnit.DAYS.between(LocalDate.now(), s.getStartDate().plusMonths(1));
+//        int dDay = (int) ChronoUnit.DAYS.between(LocalDate.now(), s.getStartDate().plusMonths(1));
+//        return from(s, dDay);
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        LocalDate baseDate = s.getStartDate().plusMonths(1);
+        int dDay = (int) ChronoUnit.DAYS.between(now, baseDate);
+
         return from(s, dDay);
     }
 }

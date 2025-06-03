@@ -15,6 +15,7 @@ import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,8 @@ public class SubscribeService {
                     int dDay = calculateDday(sub.getStartDate());
                     return SubscribeResponseDto.from(sub, dDay);
                 })
+//                dDay 임박한 순으로 정렬한다.
+                .sorted(Comparator.comparingInt(SubscribeResponseDto::getDDay))
                 .toList();
     }
 
