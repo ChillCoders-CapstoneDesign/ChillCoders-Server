@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @AllArgsConstructor
@@ -29,9 +30,12 @@ public class SubscribeResponseDto {
     @Schema(description = "구독 시작 날짜", example = "2025-05-17")
     private LocalDate startDate;
     private Integer categoryNo;
+    @Schema(description = "디데이", example = "7")
+    private int dDay;
+
 //    private String isCollect;
 
-    public static SubscribeResponseDto from(Subscribe s) {
+    public static SubscribeResponseDto from(Subscribe s, int dDay) {
         return new SubscribeResponseDto(
                 s.getSubscribeNo(),
                 s.getSubscribeName(),
@@ -41,7 +45,8 @@ public class SubscribeResponseDto {
                 s.getPeriod(),
                 s.getPeriodUnit(),
                 s.getStartDate(),
-                s.getCategory().getCategoryNo()
+                s.getCategory().getCategoryNo(),
+                dDay
 //                s.getIsCollect()
         );
     }

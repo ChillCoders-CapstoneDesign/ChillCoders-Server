@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,8 +26,22 @@ public class SubscribeService {
     private final ServiceInfoRepository serviceInfoRepository;
     private final CategoryRepository categoryRepository;
 
-    public List<Subscribe> subscribeAllList() {
-        return subscribeRepository.findAllByUserId(1);
+    public List<SubscribeResponseDto> subscribeAllList() {
+//        return subscribeRepository.findAllByUserId(1);
+        List<Subscribe> subscribe = subscribeRepository.findAllByUserId(1);
+        return subscribe.stream()
+                .map(sub -> {
+                    int dDay = calculateDday(sub.getStartDate());
+                    return SubscribeResponseDto.from(sub, dDay);
+                })
+                .toList();
+    }
+
+//    디데이 계산
+    private int calculateDday(LocalDate startDate) {
+//        LocalDate.plusMonths: 자동으로 월의 마지막 날짜를 고려하여 계산한다.
+        LocalDate baseDate = startDate.plusMonths(1); // 기준일: startDate + 1달
+        return (int) ChronoUnit.DAYS.between(LocalDate.now(), baseDate);
     }
 
     public Optional<Subscribe> findBySubscribeNo(Integer subscribeNo) {
