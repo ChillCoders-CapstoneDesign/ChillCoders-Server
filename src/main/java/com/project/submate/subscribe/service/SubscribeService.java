@@ -30,6 +30,7 @@ public class SubscribeService {
 
     private static final int USD_TO_KRW = 1360; // 고정 환율
 
+//    calculateMonthlyTotal, calculateYearlyTotal 메서드는 아래에 있다. 
     public SubscribeListResponseDto subscribeAllList() {
         List<Subscribe> subscribeList = subscribeRepository.findAllByUserId(1);
 
@@ -40,7 +41,7 @@ public class SubscribeService {
 
         int totalCount = result.size();
         int monthlyTotal = calculateMonthlyTotal(subscribeList);
-        int yearlyTotal = monthlyTotal * 12;
+        int yearlyTotal = calculateYearlyTotal(subscribeList);
 
         return new SubscribeListResponseDto(
                 totalCount,
@@ -122,7 +123,7 @@ public class SubscribeService {
 
         int totalCount = result.size();
         int monthlyTotal = calculateMonthlyTotal(subscribeList);
-        int yearlyTotal = monthlyTotal * 12;
+        int yearlyTotal = calculateYearlyTotal(subscribeList);
 
         return new SubscribeCategoryListResponseDto(
                 categoryNo,
@@ -133,27 +134,44 @@ public class SubscribeService {
         );
     }
 
+//    1달 금액 계산
     private int calculateMonthlyTotal(List<Subscribe> list) {
         int total = 0;
         for (Subscribe s : list) {
+            if (!"달".equals(s.getPeriodUnit())) continue; // 달 단위만 계산한다.
+
             int price = s.getPrice();
 
-            // priceUnit이 달러일 경우 환율 적용
-            if (s.getPriceUnit().equals("$") || s.getPriceUnit().equals("달러")) {
+            if ("$".equals(s.getPriceUnit()) || "달러".equals(s.getPriceUnit())) {
                 price *= USD_TO_KRW;
             }
 
-            // periodUnit에 따른 월 환산
-            if (s.getPeriodUnit().equals("년")) {
-                price = price / (s.getPeriod() * 12); // 연 → 월
-            } else if (s.getPeriodUnit().equals("달")) {
-                price = price / s.getPeriod();
-            }
+            price = price / s.getPeriod();
 
             total += price;
         }
         return total;
     }
+
+//    1년 금액 계산
+    private int calculateYearlyTotal(List<Subscribe> list) {
+        int total = 0;
+        for (Subscribe s : list) {
+            if (!"년".equals(s.getPeriodUnit())) continue; // 년 단위만 계산한다.
+
+            int price = s.getPrice();
+
+            if ("$".equals(s.getPriceUnit()) || "달러".equals(s.getPriceUnit())) {
+                price *= USD_TO_KRW;
+            }
+
+            price = price / s.getPeriod();
+
+            total += price;
+        }
+        return total;
+    }
+
 
 
     //    public void delete(Integer subscribeNo) {
