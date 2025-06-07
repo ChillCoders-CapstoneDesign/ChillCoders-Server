@@ -31,8 +31,8 @@ public class Subscribe {
     @Column(name = "SUBSCRIBE_NAME", length = 15, nullable = false)
     private String subscribeName;
 
-    @Column(name = "SUBSCRIBE_ENG_NAME", length = 30)
-    private String subscribeEngName;
+//    @Column(name = "SUBSCRIBE_ENG_NAME", length = 30)
+//    private String subscribeEngName;
 
     @Column(name = "IMAGE", length = 255)
     private String image;
