@@ -1,6 +1,8 @@
 package com.project.submate.subscribe.service;
 
 import com.project.submate.category.entity.Category;
+import com.project.submate.subscribe.dto.SubscribeCategoryListResponseDto;
+import com.project.submate.subscribe.dto.SubscribeListResponseDto;
 import com.project.submate.subscribe.dto.SubscribeRequestDto;
 import com.project.submate.subscribe.dto.SubscribeResponseDto;
 import com.project.submate.subscribe.entity.ServiceInfo;
@@ -11,11 +13,9 @@ import com.project.submate.subscribe.repository.SubscribeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -28,20 +28,29 @@ public class SubscribeService {
     private final ServiceInfoRepository serviceInfoRepository;
     private final CategoryRepository categoryRepository;
 
-    public List<SubscribeResponseDto> subscribeAllList() {
-//        return subscribeRepository.findAllByUserId(1);
-        List<Subscribe> subscribe = subscribeRepository.findAllByUserId(1);
-        return subscribe.stream()
-                .map(sub -> {
-                    int dDay = calculateDday(sub.getStartDate());
-                    return SubscribeResponseDto.from(sub, dDay);
-                })
-//                dDay 임박한 순으로 정렬한다.
+    private static final int USD_TO_KRW = 1360; // 고정 환율
+
+    public SubscribeListResponseDto subscribeAllList() {
+        List<Subscribe> subscribeList = subscribeRepository.findAllByUserId(1);
+
+        List<SubscribeResponseDto> result = subscribeList.stream()
+                .map(sub -> SubscribeResponseDto.from(sub, calculateDday(sub.getStartDate())))
                 .sorted(Comparator.comparingInt(SubscribeResponseDto::getDDay))
                 .toList();
+
+        int totalCount = result.size();
+        int monthlyTotal = calculateMonthlyTotal(subscribeList);
+        int yearlyTotal = monthlyTotal * 12;
+
+        return new SubscribeListResponseDto(
+                totalCount,
+                monthlyTotal,
+                yearlyTotal,
+                result
+        );
     }
 
-//    디데이 계산(******Asia/Seoul 시간으로 나오지 않아서 임의로 결과에 -1을 해주었다)
+    //    디데이 계산(******Asia/Seoul 시간으로 나오지 않아서 임의로 결과에 -1을 해주었다)
     private int calculateDday(LocalDate startDate) {
 //        LocalDate.plusMonths: 자동으로 월의 마지막 날짜를 고려하여 계산한다.
         LocalDate baseDate = startDate.plusMonths(1); // 기준일: startDate + 1달
@@ -101,7 +110,51 @@ public class SubscribeService {
         return subscribeRepository.save(subscribe);
     }
 
-//    public void delete(Integer subscribeNo) {
+//    카테고리별 목록조회
+    public SubscribeCategoryListResponseDto getSubscribeByCategory(Integer categoryNo){
+        List<Subscribe> subscribeList = subscribeRepository.findAllByUserIdAndCategory(1, categoryNo);
+
+        List<SubscribeResponseDto> result = subscribeList.stream()
+                .map(sub -> SubscribeResponseDto.from(sub, calculateDday(sub.getStartDate())))
+                .toList();
+
+        int totalCount = result.size();
+        int monthlyTotal = calculateMonthlyTotal(subscribeList);
+        int yearlyTotal = monthlyTotal * 12;
+
+        return new SubscribeCategoryListResponseDto(
+                categoryNo,
+                totalCount,
+                monthlyTotal,
+                yearlyTotal,
+                result
+        );
+    }
+
+    private int calculateMonthlyTotal(List<Subscribe> list) {
+        int total = 0;
+        for (Subscribe s : list) {
+            int price = s.getPrice();
+
+            // priceUnit이 달러일 경우 환율 적용
+            if (s.getPriceUnit().equals("$") || s.getPriceUnit().equals("달러")) {
+                price *= USD_TO_KRW;
+            }
+
+            // periodUnit에 따른 월 환산
+            if (s.getPeriodUnit().equals("년")) {
+                price = price / (s.getPeriod() * 12); // 연 → 월
+            } else if (s.getPeriodUnit().equals("달")) {
+                price = price / s.getPeriod();
+            }
+
+            total += price;
+        }
+        return total;
+    }
+
+
+    //    public void delete(Integer subscribeNo) {
 //        Subscribe subscribe = subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1)
 //                .orElseThrow(() -> new IllegalArgumentException("삭제할 구독 정보가 없습니다."));
 //        subscribe.setDeleted(true); // 실제 삭제가 아닌, DB 정보만 isDeleted를 true로 한다.

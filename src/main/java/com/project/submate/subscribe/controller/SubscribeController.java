@@ -1,10 +1,10 @@
 package com.project.submate.subscribe.controller;
 
+import com.project.submate.subscribe.dto.SubscribeCategoryListResponseDto;
+import com.project.submate.subscribe.dto.SubscribeListResponseDto;
 import com.project.submate.subscribe.dto.SubscribeRequestDto;
 import com.project.submate.subscribe.dto.SubscribeResponseDto;
-import com.project.submate.subscribe.dto.SubscribeSearchResponseDto;
 import com.project.submate.subscribe.entity.Subscribe;
-import com.project.submate.subscribe.repository.SubscribeRepository;
 import com.project.submate.subscribe.service.SubscribeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +25,8 @@ public class SubscribeController {
 //    구독서비스 목록조회(홈에서 사용할 부분들)
     @Operation(summary = "구독 서비스 목록 조회", description = "본인(userId=1)이 등록한 구독 서비스를 조회한다.")
     @GetMapping("/list")
-    public List<SubscribeResponseDto> getAllSubscribe(){
-        return subscribeService.subscribeAllList();
+    public ResponseEntity<SubscribeListResponseDto> getAllSubscribe(){
+        return ResponseEntity.ok(subscribeService.subscribeAllList());
 //                .stream()
 //                .map(SubscribeResponseDto::from)
 //                .toList();
@@ -60,6 +60,14 @@ public class SubscribeController {
         Subscribe saved = subscribeService.save(subscribeRequestDto);
         return ResponseEntity.ok(SubscribeResponseDto.from(saved));
     }
+
+//    카테고리별 구독서비스 목록조회
+    @Operation(summary = "카테고리별 구독 목록 조회", description = "특정 카테고리(categoryNo)에 해당하는 구독 목록을 조회한다.")
+    @GetMapping("/list/category/{categoryNo}")
+    public ResponseEntity<SubscribeCategoryListResponseDto> getByCategory(@PathVariable Integer categoryNo) {
+        return ResponseEntity.ok(subscribeService.getSubscribeByCategory(categoryNo));
+    }
+
 
 //    구독서비스 삭제
 //    @Operation(summary = "구독 서비스 삭제", description = "사용자(userId=1)의 특정 구독 서비스(구독 번호)를 삭제한다.")
