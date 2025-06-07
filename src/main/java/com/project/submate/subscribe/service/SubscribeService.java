@@ -30,7 +30,7 @@ public class SubscribeService {
 
     private static final int USD_TO_KRW = 1360; // 고정 환율
 
-//    calculateMonthlyTotal, calculateYearlyTotal 메서드는 아래에 있다. 
+//    calculateMonthlyTotal, calculateYearlyTotal 메서드는 아래에 있다.
     public SubscribeListResponseDto subscribeAllList() {
         List<Subscribe> subscribeList = subscribeRepository.findAllByUserId(1);
 
