@@ -81,6 +81,9 @@ public class SubscribeService {
         if (serviceInfoOpt.isPresent()) {
             // 기존 서비스면 무조건 기존 매핑된 카테고리 사용
             category = serviceInfoOpt.get().getCategory();
+            if (category == null) {
+                throw new IllegalStateException("기존 서비스에 연결된 카테고리가 없습니다.");
+            }
         } else {
             // 새로운 서비스 등록이면 사용자가 선택한 categoryNo 기반으로 조회
             category = categoryRepository.findById(subscribeRequestDto.getCategoryNo())
