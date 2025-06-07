@@ -112,7 +112,9 @@ public class SubscribeService {
 
 //    카테고리별 목록조회
     public SubscribeCategoryListResponseDto getSubscribeByCategory(Integer categoryNo){
-        List<Subscribe> subscribeList = subscribeRepository.findAllByUserIdAndCategory(1, categoryNo);
+        Category category = categoryRepository.findById(categoryNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리 없음"));
+        List<Subscribe> subscribeList = subscribeRepository.findAllByUserIdAndCategory(1, category);
 
         List<SubscribeResponseDto> result = subscribeList.stream()
                 .map(sub -> SubscribeResponseDto.from(sub, calculateDday(sub.getStartDate())))
