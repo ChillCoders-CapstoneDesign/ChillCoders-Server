@@ -74,7 +74,7 @@ public class NotificationScheduler {
             // 3-2. 월 지출 3만원 초과
             if (totalSpending > 30000) {
                 notificationService.saveNotification(1, "이번 달 구독 지출이 총 " + totalSpending + "원이에요. 다른 구독도 점검해보세요!");
-                System.out.println("📨 지출 초과 알림 저장됨: " + totalSpending + "원");
+                System.out.println("지출 초과 알림 저장됨: " + totalSpending + "원");
             }
 
         } catch (Exception e) {
