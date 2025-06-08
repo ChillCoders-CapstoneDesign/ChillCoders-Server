@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//ddl-auto: update(application.yml 커밋용 주석) 
+
 @RestController
 @RequestMapping("/api/v1/subscribe")
 @RequiredArgsConstructor
@@ -79,4 +81,5 @@ public class SubscribeController {
                 .map(SubscribeSearchResponseDto::from)
                 .toList();
     }
+
 }
