@@ -61,8 +61,9 @@ public class SubscribeService {
         return Math.max(dDay, 0); // 음수 방지 
     }
 
-    public Optional<Subscribe> findBySubscribeNo(Integer subscribeNo) {
-        return subscribeRepository.findBySubscribeNo(subscribeNo);
+    public Subscribe findBySubscribeNo(Integer subscribeNo) {
+        return subscribeRepository.findBySubscribeNo(subscribeNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 구독 서비스가 없습니다."));
     }
 
     public Subscribe update(Integer subscribeNo, SubscribeRequestDto subscribeRequestDto) {
@@ -189,5 +190,9 @@ public class SubscribeService {
         }
 
         subscribeRepository.deleteBySubscribeNoAndUserId(subscribeNo, userId);
+    }
+
+    public List<Subscribe> searchByName(String keyword) {
+        return subscribeRepository.findBySubscribeNameStartingWith(keyword);
     }
 }

@@ -1,9 +1,6 @@
 package com.project.submate.subscribe.controller;
 
-import com.project.submate.subscribe.dto.SubscribeCategoryListResponseDto;
-import com.project.submate.subscribe.dto.SubscribeListResponseDto;
-import com.project.submate.subscribe.dto.SubscribeRequestDto;
-import com.project.submate.subscribe.dto.SubscribeResponseDto;
+import com.project.submate.subscribe.dto.*;
 import com.project.submate.subscribe.entity.Subscribe;
 import com.project.submate.subscribe.service.SubscribeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,11 +32,9 @@ public class SubscribeController {
 //    구독서비스 기존 정보 바탕 불러오기: 이 부분은 userId에 관계없이 db에 있는 것을 불러와야 하기 때문에 'findBySubscribeNo'를 사용한다.
     @Operation(summary = "기존 등록: 특정 구독 서비스 조회(구독 번호로 조회)", description = "기존(DB에 저장되어 있는)에 있는 구독 서비스 정보를 불러온다")
     @GetMapping("/{subscribeNo}")
-    public SubscribeResponseDto getBySubscribeNo(@PathVariable Integer subscribeNo){
-        Subscribe subscribe = subscribeService.findBySubscribeNo(subscribeNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 구독 서비스가 없습니다."));
-//        해야할 것: 해당 구독서비스 없을 때 에러처리 하기
-        return SubscribeResponseDto.from(subscribe);
+    public ResponseEntity<SubscribeResponseDto> getBySubscribeNo(@PathVariable Integer subscribeNo){
+        Subscribe subscribe = subscribeService.findBySubscribeNo(subscribeNo);
+        return ResponseEntity.ok(SubscribeResponseDto.from(subscribe));
     }
 
 //    구독서비스 기존 정보 바탕으로 저장/등록(즉, 수정)
@@ -75,12 +70,13 @@ public class SubscribeController {
         return ResponseEntity.noContent().build();
     }
 
-
-
 //    구독서비스 검색
-//    @Operation(summary = "구독 서비스 이름 검색", description = "입력한 이름으로 구독 서비스를 검색한다.")
-//    @GetMapping("/search")
-//    public List<SubscribeSearchResponseDto> searchByName(@RequestParam String name) {
-//        return null;
-//    }
+    @Operation(summary = "구독 서비스 이름 검색", description = "입력한 이름으로 시작하는 구독 서비스를 검색한다.")
+    @GetMapping("/search")
+    public List<SubscribeSearchResponseDto> searchByName(@RequestParam String keyword) {
+        List<Subscribe> result = subscribeService.searchByName(keyword);
+        return result.stream()
+                .map(SubscribeSearchResponseDto::from)
+                .toList();
+    }
 }
