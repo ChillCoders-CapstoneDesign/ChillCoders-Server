@@ -118,7 +118,7 @@ public class SubscribeService {
 //    카테고리별 목록조회
     public SubscribeCategoryListResponseDto getSubscribeByCategory(Integer categoryNo){
         Category category = categoryRepository.findById(categoryNo)
-                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리는 존재하지 않습니다."));
         List<Subscribe> subscribeList = subscribeRepository.findAllByUserIdAndCategory(1, category);
 
         List<SubscribeResponseDto> result = subscribeList.stream()
@@ -179,6 +179,15 @@ public class SubscribeService {
     @Transactional
     public void delete(Integer subscribeNo) {
         int userId = 1;
+
+        boolean exists = subscribeRepository.findBySubscribeNo(subscribeNo)
+                .map(s -> s.getUserId().equals(userId))
+                .orElse(false);
+
+        if (!exists) {
+            throw new IllegalArgumentException("해당 구독이 존재하지 않거나 사용자 권한이 없습니다.");
+        }
+
         subscribeRepository.deleteBySubscribeNoAndUserId(subscribeNo, userId);
     }
 }

@@ -42,7 +42,6 @@ public class SubscribeController {
         return SubscribeResponseDto.from(subscribe);
     }
 
-
 //    구독서비스 기존 정보 바탕으로 저장/등록(즉, 수정)
     @Operation(summary = "구독 서비스 기존 등록", description = "기존 데이터를 바탕으로 사용자(userId=1)가 구독 서비스를 등록/수정한다.")
     @PutMapping("/{subscribeNo}")
@@ -67,7 +66,6 @@ public class SubscribeController {
     public ResponseEntity<SubscribeCategoryListResponseDto> getByCategory(@PathVariable Integer categoryNo) {
         return ResponseEntity.ok(subscribeService.getSubscribeByCategory(categoryNo));
     }
-
 
 //    구독서비스 삭제
     @Operation(summary = "구독 서비스 삭제", description = "사용자(userId=1)의 특정 구독 서비스(구독 번호)를 삭제한다.")
