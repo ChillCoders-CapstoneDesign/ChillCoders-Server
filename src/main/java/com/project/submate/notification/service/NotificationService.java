@@ -4,6 +4,7 @@ import com.project.submate.notification.entity.Notification;
 import com.project.submate.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
+    @Transactional
     public void saveNotification(Integer userId, String message) {
         if (userId == null || message == null) return;
         notificationRepository.save(Notification.builder()
@@ -28,16 +30,12 @@ public class NotificationService {
         return notificationRepository.findAllByUserIdAndIsReadFalse(userId);
     }
 
+    @Transactional
     public void markAsRead(Integer notificationNo) {
         notificationRepository.findById(notificationNo).ifPresent(n -> {
             n.setIsRead(true);
             notificationRepository.save(n);
         });
     }
-
-    public void markAllAsRead(Integer userId) {
-        List<Notification> list = notificationRepository.findAllByUserIdAndIsReadFalse(userId);
-        list.forEach(n -> n.setIsRead(true));
-        notificationRepository.saveAll(list);
-    }
+    
 }
