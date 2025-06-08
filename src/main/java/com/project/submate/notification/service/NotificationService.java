@@ -17,7 +17,8 @@ public class NotificationService {
 
     @Transactional
     public void saveNotification(Integer userId, String message) {
-        if (userId == null || message == null) return;
+        if (userId == null || message == null)
+            return;
         notificationRepository.save(Notification.builder()
                 .userId(userId)
                 .message(message)
@@ -37,5 +38,4 @@ public class NotificationService {
             notificationRepository.save(n);
         });
     }
-    
 }
