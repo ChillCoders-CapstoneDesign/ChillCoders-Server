@@ -10,6 +10,7 @@ import com.project.submate.subscribe.entity.Subscribe;
 import com.project.submate.subscribe.repository.CategoryRepository;
 import com.project.submate.subscribe.repository.ServiceInfoRepository;
 import com.project.submate.subscribe.repository.SubscribeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -175,12 +176,9 @@ public class SubscribeService {
         return total;
     }
 
-
-
-    //    public void delete(Integer subscribeNo) {
-//        Subscribe subscribe = subscribeRepository.findBySubscribeNoAndUserId(subscribeNo, 1)
-//                .orElseThrow(() -> new IllegalArgumentException("삭제할 구독 정보가 없습니다."));
-//        subscribe.setDeleted(true); // 실제 삭제가 아닌, DB 정보만 isDeleted를 true로 한다.
-//        subscribeRepository.save(subscribe);
-//    }
+    @Transactional
+    public void delete(Integer subscribeNo) {
+        int userId = 1;
+        subscribeRepository.deleteBySubscribeNoAndUserId(subscribeNo, userId);
+    }
 }

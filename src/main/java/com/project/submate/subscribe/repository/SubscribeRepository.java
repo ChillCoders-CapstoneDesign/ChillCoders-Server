@@ -16,6 +16,6 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Integer> {
 
     List<Subscribe> findAllByUserIdAndCategory(Integer userId, Category category);
 
-//    현재는 userId를 1로 하드코딩했지만, 일반적으로 다른 userId를 삭제하면 안되기 때문에 이와 같이 적는다.
-//    Optional<Subscribe> findBySubscribeNoAndUserId(Integer subscribeNo, Integer userId);
+//    현재는 userId를 1로 하드코딩했지만, 일반적으로 다른 userId를 삭제하면 안된다.
+    void deleteBySubscribeNoAndUserId(Integer subscribeNo, Integer userId);
 }
