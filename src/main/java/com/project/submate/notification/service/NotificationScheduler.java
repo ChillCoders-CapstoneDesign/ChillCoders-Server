@@ -40,6 +40,16 @@ public class NotificationScheduler {
 
                     long monthsPassed = ChronoUnit.MONTHS.between(s.getStartDate(), LocalDate.now());
                     System.out.println("시작일: " + s.getStartDate() + ", 경과 개월 수: " + monthsPassed);
+                    LocalDate nextPayDate = s.getStartDate().plusMonths(monthsPassed + 1);
+                    long dDay = ChronoUnit.DAYS.between(LocalDate.now(), nextPayDate);
+
+                    System.out.println("시작일: " + s.getStartDate() + ", 경과 개월 수: " + monthsPassed + ", dDay: " + dDay);
+
+                    // 3일 전 알림
+                    if (dDay == 3) {
+                        notificationService.saveNotification(1, s.getSubscribeName() + " 구독 결제가 3일 후 예정되어 있어요!");
+                        System.out.println("📨 디데이 알림 저장됨: " + s.getSubscribeName());
+                    }
 
                 } catch (Exception ex) {
                     System.err.println("반복문 내부 처리 중 에러: " + ex.getMessage());
