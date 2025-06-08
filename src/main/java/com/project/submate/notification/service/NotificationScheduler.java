@@ -18,6 +18,16 @@ public class NotificationScheduler {
 
     @Scheduled(cron = "0 0 9 * * *")  // 매일 오전 9시
     public void checkNotifications() {
-        System.out.println("Scheduler는 정상적으로 실행됐습니다.");
+        System.out.println("Scheduler 실행 시작");
+
+        try {
+            List<Subscribe> subs = subscribeRepository.findAllByUserId(1);
+            System.out.println("구독 개수: " + subs.size());
+        } catch (Exception e) {
+            System.err.println("구독 목록 조회 중 에러: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("Scheduler 실행 종료");
     }
 }
