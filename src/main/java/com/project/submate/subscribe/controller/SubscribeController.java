@@ -74,7 +74,7 @@ public class SubscribeController {
     @DeleteMapping("/{subscribeNo}")
     public ResponseEntity<Void> deleteSubscribe(@PathVariable Integer subscribeNo) {
         subscribeService.delete(subscribeNo);
-        return ResponseEntity.noContent().build(); 
+        return ResponseEntity.noContent().build();
     }
 
 

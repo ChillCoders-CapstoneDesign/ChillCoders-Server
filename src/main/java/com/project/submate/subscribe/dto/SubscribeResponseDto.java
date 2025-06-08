@@ -13,7 +13,7 @@ import java.time.temporal.ChronoUnit;
 
 @Getter
 @AllArgsConstructor
-@Schema(description = "등록한 구독 서비스 조회")
+@Schema(description = "등록한 구독 서비스 (전체)조회")
 public class SubscribeResponseDto {
     @Schema(description = "구독 번호", example = "1")
     private Integer subscribeNo;
@@ -31,6 +31,7 @@ public class SubscribeResponseDto {
     private String periodUnit;
     @Schema(description = "구독 시작 날짜", example = "2025-05-17")
     private LocalDate startDate;
+    @Schema(description = "카테고리 번호", example = "1.OTT 2.음악 3.배달/배송 4.클라우드 5.AI 6.툴 7.기타서비스")
     private Integer categoryNo;
     @Schema(description = "디데이", example = "7")
     private int dDay;
