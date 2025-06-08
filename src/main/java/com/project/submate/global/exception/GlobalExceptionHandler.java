@@ -32,6 +32,7 @@ public class GlobalExceptionHandler {
     // [4] 그 외 모든 예외
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception ex) {
+        ex.printStackTrace();
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
     }
 
