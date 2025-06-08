@@ -19,6 +19,11 @@ public class NotificationService {
     public void saveNotification(Integer userId, String message) {
         if (userId == null || message == null)
             return;
+
+        boolean alreadyExist = notificationRepository.existsTodayByUserIdAndMessage(userId, message);
+        if (alreadyExist) {
+            return;
+        }
         notificationRepository.save(Notification.builder()
                 .userId(userId)
                 .message(message)
