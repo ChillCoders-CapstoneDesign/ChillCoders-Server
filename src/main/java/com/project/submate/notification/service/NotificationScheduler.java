@@ -16,63 +16,77 @@ public class NotificationScheduler {
     private final SubscribeRepository subscribeRepository;
     private final NotificationService notificationService;
 
-    @Scheduled(cron = "0 0 9 * * *")  // 매일 오후 6시 (한국시간 기준)
+    @Scheduled(cron = "0 0 9 * * *")  // 매일 오전 9시
     public void checkNotifications() {
         System.out.println("Scheduler 실행 시작");
 
         try {
             List<Subscribe> subscribeList = subscribeRepository.findAllByUserId(1);
-//            System.out.println("구독 개수: " + subscribeList.size());
-
             LocalDate today = LocalDate.now();
             int totalSpending = 0;
 
             for (Subscribe s : subscribeList) {
-                if (s == null) {
+                if (s == null || s.getStartDate() == null || s.getSubscribeName() == null || s.getPrice() == null) {
                     continue;
                 }
 
-                try {
-//                    System.out.println("처리 중인 서비스: " + s.getSubscribeName());
+                LocalDate nextPayDate;
+                long dDay;
 
-                    if (s.getStartDate() == null || s.getSubscribeName() == null || s.getPrice() == null) {
-                        continue;
-                    }
-
+                // "달"인 경우 처리
+                if ("달".equals(s.getPeriodUnit())) {
                     long monthsPassed = ChronoUnit.MONTHS.between(s.getStartDate(), today);
+                    nextPayDate = s.getStartDate().plusMonths(monthsPassed * s.getPeriod());
 
-                    LocalDate nextPayDate = s.getStartDate().plusMonths(monthsPassed);
                     if (!nextPayDate.isAfter(today)) {
-                        nextPayDate = nextPayDate.plusMonths(1);
+                        nextPayDate = nextPayDate.plusMonths(s.getPeriod());
                     }
 
-                    long dDay = ChronoUnit.DAYS.between(today, nextPayDate);
+                    dDay = ChronoUnit.DAYS.between(today, nextPayDate);
 
-                    // 1. 3일 전 알림
-                    if (dDay == 3) {
-                        notificationService.saveNotification(1, s.getSubscribeName() + " 구독 결제가 3일 후 예정되어 있어요!");
+                    // 6개월 이상 구독 유지 알림
+                    long totalMonths = ChronoUnit.MONTHS.between(s.getStartDate(), today);
+                    if (totalMonths >= 6 && totalMonths % 6 == 0) {
+                        notificationService.saveNotification(1, s.getSubscribeName() + " 구독을 " + totalMonths + "개월 동안 이어오셨어요. 잠깐 해지도 고려해보세요!");
                     }
 
-                    // 2. 6개월 경과(사용하고 있음을) 알림
-                    if (monthsPassed >= 6 && monthsPassed % 6 == 0) {
-                        notificationService.saveNotification(1, s.getSubscribeName() + " 구독을 " + monthsPassed + "개월 동안 이어오셨어요. 잠깐 해지도 고려해보세요!");
+                }
+                // "년"인 경우 처리
+                else if ("년".equals(s.getPeriodUnit())) {
+                    long yearsPassed = ChronoUnit.YEARS.between(s.getStartDate(), today);
+                    nextPayDate = s.getStartDate().plusYears(yearsPassed * s.getPeriod());
+
+                    if (!nextPayDate.isAfter(today)) {
+                        nextPayDate = nextPayDate.plusYears(s.getPeriod());
                     }
 
-                    // 3. 월 지출 누적합 계산
-                    if (nextPayDate.getMonthValue() == today.getMonthValue() && nextPayDate.getYear() == today.getYear()) {
-                        totalSpending += s.getPrice();
+                    dDay = ChronoUnit.DAYS.between(today, nextPayDate);
+
+                    // 6개월 이상 구독 유지 알림
+                    long totalMonths = ChronoUnit.MONTHS.between(s.getStartDate(), today);
+                    if (totalMonths >= 6 && totalMonths % 6 == 0) {
+                        notificationService.saveNotification(1, s.getSubscribeName() + " 구독을 " + totalMonths + "개월 동안 이어오셨어요. 잠깐 해지도 고려해보세요!");
                     }
 
-                } catch (Exception ex) {
-//                    System.err.println("반복문 내부 처리 중 에러: " + ex.getMessage());
-                    ex.printStackTrace();
+                } else {
+                    // 잘못된 periodUnit 값일 경우 skip
+                    continue;
+                }
+
+                // 1. 디데이 3일 전 알림
+                if (dDay == 3) {
+                    notificationService.saveNotification(1, s.getSubscribeName() + " 구독 결제가 3일 후 예정되어 있어요!");
+                }
+
+                // 2. 이번 달에 결제 예정이면 지출 누적합에 추가
+                if (nextPayDate.getMonthValue() == today.getMonthValue() && nextPayDate.getYear() == today.getYear()) {
+                    totalSpending += s.getPrice();
                 }
             }
 
-            // 3-2. 월 지출 3만원 초과
+            // 3. 월간 지출 3만 원 초과 알림
             if (totalSpending > 30000) {
                 notificationService.saveNotification(1, "이번 달 구독 지출이 총 " + totalSpending + "원이에요. 구독하고 있는 서비스들을 점검해 보세요!");
-//                System.out.println("지출 초과 알림: " + totalSpending + "원");
             }
 
         } catch (Exception e) {
@@ -82,4 +96,5 @@ public class NotificationScheduler {
 
         System.out.println("Scheduler 실행 종료");
     }
+
 }
