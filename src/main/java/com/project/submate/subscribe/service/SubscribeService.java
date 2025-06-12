@@ -54,15 +54,14 @@ public class SubscribeService {
     }
 
     //    디데이 계산
-    private int calculateDday(LocalDate startDate, int period, String periodUnit) {
-        if (startDate == null || period <= 0 || periodUnit == null) {
+    private int calculateDday(LocalDate startDate, Integer period, String periodUnit) {
+        if (startDate == null || period == null || period <= 0 || periodUnit == null) {
             return 0;
         }
 
         LocalDate now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
         LocalDate nextBillingDate = startDate;
 
-        // 다음 결제일이 오늘보다 이후가 될 때까지 반복
         while (!nextBillingDate.isAfter(now)) {
             switch (periodUnit) {
                 case "달":
@@ -76,8 +75,7 @@ public class SubscribeService {
             }
         }
 
-        int dDay = (int) ChronoUnit.DAYS.between(now, nextBillingDate);
-        return Math.max(dDay, 0);
+        return Math.max((int) ChronoUnit.DAYS.between(now, nextBillingDate), 0);
     }
 
     public Subscribe findBySubscribeNo(Integer subscribeNo) {
