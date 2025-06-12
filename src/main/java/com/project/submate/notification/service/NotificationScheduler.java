@@ -80,7 +80,11 @@ public class NotificationScheduler {
 
                 // 2. 이번 달에 결제 예정이면 지출 누적합에 추가
                 if (nextPayDate.getMonthValue() == today.getMonthValue() && nextPayDate.getYear() == today.getYear()) {
-                    totalSpending += s.getPrice();
+                    int price = s.getPrice();
+                    if ("$".equals(s.getPriceUnit())) {
+                        price *= 1360; // 환산
+                    }
+                    totalSpending += price;
                 }
             }
 
