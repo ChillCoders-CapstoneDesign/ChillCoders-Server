@@ -62,17 +62,6 @@ public class SubscribeService {
             return 0;
         }
 
-//        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-//
-//        // 반복 결제일: 매달 startDate의 day에 결제된다고 가정한다.
-//        LocalDate nextBillingDate = startDate;
-//
-//        // 현재 날짜 이후의 가장 가까운 결제일을 찾는다.
-//        while (!nextBillingDate.isAfter(now)) {
-//            nextBillingDate = nextBillingDate.plusMonths(1);
-//        }
-//        int dDay = (int) ChronoUnit.DAYS.between(now, nextBillingDate);
-//        return Math.max(dDay, 0); // 음수 방지
         // 1) 오늘 날짜 (Asia/Seoul 기준)
         LocalDate now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
 
@@ -97,12 +86,14 @@ public class SubscribeService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 구독 서비스가 없습니다."));
     }
 
-    public Subscribe update(Integer subscribeNo, SubscribeRequestDto subscribeRequestDto) {
+    public SubscribeResponseDto update(Integer subscribeNo, SubscribeRequestDto subscribeRequestDto) {
         Subscribe subscribe = subscribeRepository.findBySubscribeNo(subscribeNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 구독이 없습니다."));
         subscribeRequestDto.updateSubscribeInfo(subscribe); // 값 수정
         subscribe.setUserId(1);
-        return subscribeRepository.save(subscribe);
+//        return subscribeRepository.save(subscribe);
+        Subscribe updated = subscribeRepository.save(subscribe);
+        return SubscribeResponseDto.from(updated, calculateDday(updated.getStartDate()));
     }
 
     public Subscribe save(SubscribeRequestDto subscribeRequestDto) {
