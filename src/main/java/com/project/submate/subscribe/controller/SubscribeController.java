@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//ddl-auto: update(application.yml 커밋용 주석) , create - category와 subscribe 테이블 더미데이터 넣기!
+//ddl-auto: update(application.yml 커밋용 주석) , create - category와 subscribe 테이블 더미데이터 넣기
 
 @RestController
 @RequestMapping("/api/v1/subscribe")
