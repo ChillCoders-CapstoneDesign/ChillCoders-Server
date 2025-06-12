@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
@@ -61,26 +62,34 @@ public class SubscribeService {
             return 0;
         }
 
-        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-
-        // 반복 결제일: 매달 startDate의 day에 결제된다고 가정한다.
+//        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+//
+//        // 반복 결제일: 매달 startDate의 day에 결제된다고 가정한다.
 //        LocalDate nextBillingDate = startDate;
-
-        // 현재 날짜 이후의 가장 가까운 결제일을 찾는다.
+//
+//        // 현재 날짜 이후의 가장 가까운 결제일을 찾는다.
 //        while (!nextBillingDate.isAfter(now)) {
 //            nextBillingDate = nextBillingDate.plusMonths(1);
 //        }
+//        int dDay = (int) ChronoUnit.DAYS.between(now, nextBillingDate);
+//        return Math.max(dDay, 0); // 음수 방지
+        // 1) 오늘 날짜 (Asia/Seoul 기준)
+        LocalDate now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
 
+        // 2) startDate부터 지금까지 몇 개월이 지났는지 계산
         long monthsSinceStart = ChronoUnit.MONTHS.between(startDate, now);
 
+        // 3) 이번 달 결제일
         LocalDate billingDateThisMonth = startDate.plusMonths(monthsSinceStart);
-        
+
+        // 4) 이번 달 결제일이 아직 남았다면 그대로, 지났으면 다음 달로
         LocalDate nextBillingDate = billingDateThisMonth.isAfter(now)
                 ? billingDateThisMonth
                 : billingDateThisMonth.plusMonths(1);
 
+        // 5) D-day 계산 (절대 음수 방지)
         int dDay = (int) ChronoUnit.DAYS.between(now, nextBillingDate);
-        return Math.max(dDay, 0); // 음수 방지
+        return Math.max(dDay, 0);
     }
 
     public Subscribe findBySubscribeNo(Integer subscribeNo) {
