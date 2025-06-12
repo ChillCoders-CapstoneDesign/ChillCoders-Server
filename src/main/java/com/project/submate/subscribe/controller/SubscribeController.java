@@ -36,7 +36,13 @@ public class SubscribeController {
     @GetMapping("/{subscribeNo}")
     public ResponseEntity<SubscribeResponseDto> getBySubscribeNo(@PathVariable Integer subscribeNo){
         Subscribe subscribe = subscribeService.findBySubscribeNo(subscribeNo);
-        return ResponseEntity.ok(SubscribeResponseDto.from(subscribe));
+//        return ResponseEntity.ok(SubscribeResponseDto.from(subscribe));
+        int dDay = subscribeService.calculateDday(
+                subscribe.getStartDate(),
+                subscribe.getPeriod(),
+                subscribe.getPeriodUnit()
+        );
+        return ResponseEntity.ok(SubscribeResponseDto.from(subscribe, dDay));
     }
 
 //    구독서비스 기존 정보 바탕으로 저장/등록(즉, 수정)
