@@ -16,7 +16,7 @@ public class NotificationScheduler {
     private final SubscribeRepository subscribeRepository;
     private final NotificationService notificationService;
 
-    @Scheduled(cron = "0 0 9 * * *")  // 매일 오전 9시
+    @Scheduled(cron = "0 0 9 * * *")  // 매일 오전 9시(한국시간아님)
     public void checkNotifications() {
         System.out.println("Scheduler 실행 시작");
 
@@ -74,7 +74,7 @@ public class NotificationScheduler {
                 }
 
                 // 1. 디데이 3일 전 알림
-                if (dDay == 3) {
+                if (dDay == 4) {
                     notificationService.saveNotification(1, s.getSubscribeName() + " 구독 결제가 3일 후 예정되어 있어요!");
                 }
 
