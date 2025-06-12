@@ -71,7 +71,7 @@ public class SubscribeService {
             nextBillingDate = nextBillingDate.plusMonths(1);
         }
         int dDay = (int) ChronoUnit.DAYS.between(now, nextBillingDate);
-        return Math.max(dDay, 0); // 음수 방지 
+        return Math.max(dDay, 0); // 음수 방지
     }
 
     public Subscribe findBySubscribeNo(Integer subscribeNo) {
