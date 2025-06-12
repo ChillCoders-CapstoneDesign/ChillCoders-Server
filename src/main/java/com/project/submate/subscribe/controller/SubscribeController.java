@@ -45,8 +45,9 @@ public class SubscribeController {
     public SubscribeResponseDto updateSubscribe(
             @PathVariable Integer subscribeNo,
             @RequestBody SubscribeRequestDto subscribeRequestDto){
-        Subscribe updateInfo = subscribeService.update(subscribeNo, subscribeRequestDto);
-        return SubscribeResponseDto.from(updateInfo);
+//        Subscribe updateInfo = subscribeService.update(subscribeNo, subscribeRequestDto);
+//        return SubscribeResponseDto.from(updateInfo);
+        return subscribeService.update(subscribeNo, subscribeRequestDto);
     }
 
 //    구독서비스 새로 등록
