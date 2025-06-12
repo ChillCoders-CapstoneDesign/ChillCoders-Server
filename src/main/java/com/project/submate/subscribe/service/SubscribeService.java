@@ -37,7 +37,7 @@ public class SubscribeService {
         List<Subscribe> subscribeList = subscribeRepository.findAllByUserId(1);
 
         List<SubscribeResponseDto> result = subscribeList.stream()
-                .map(sub -> SubscribeResponseDto.from(sub, calculateDday(sub.getStartDate())))
+                .map(sub -> SubscribeResponseDto.from(sub, calculateDday(sub.getStartDate(), sub.getPeriod(), sub.getPeriodUnit())))
                 .sorted(Comparator.comparingInt(SubscribeResponseDto::getDDay))
                 .toList();
 
@@ -53,30 +53,29 @@ public class SubscribeService {
         );
     }
 
-    //    디데이 계산(******Asia/Seoul 시간으로 나오지 않아서 임의로 결과에 -1을 해주었다)
-    private int calculateDday(LocalDate startDate) {
-//        LocalDate.plusMonths: 자동으로 월의 마지막 날짜를 고려하여 계산한다.
-//        LocalDate baseDate = startDate.plusMonths(1); // 기준일: startDate + 1달
-
-        if (startDate == null) {
+    //    디데이 계산
+    private int calculateDday(LocalDate startDate, int period, String periodUnit) {
+        if (startDate == null || period <= 0 || periodUnit == null) {
             return 0;
         }
 
-        // 1) 오늘 날짜 (Asia/Seoul 기준)
         LocalDate now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
+        LocalDate nextBillingDate = startDate;
 
-        // 2) startDate부터 지금까지 몇 개월이 지났는지 계산
-        long monthsSinceStart = ChronoUnit.MONTHS.between(startDate, now);
+        // 다음 결제일이 오늘보다 이후가 될 때까지 반복
+        while (!nextBillingDate.isAfter(now)) {
+            switch (periodUnit) {
+                case "달":
+                    nextBillingDate = nextBillingDate.plusMonths(period);
+                    break;
+                case "년":
+                    nextBillingDate = nextBillingDate.plusYears(period);
+                    break;
+                default:
+                    return 0;
+            }
+        }
 
-        // 3) 이번 달 결제일
-        LocalDate billingDateThisMonth = startDate.plusMonths(monthsSinceStart);
-
-        // 4) 이번 달 결제일이 아직 남았다면 그대로, 지났으면 다음 달로
-        LocalDate nextBillingDate = billingDateThisMonth.isAfter(now)
-                ? billingDateThisMonth
-                : billingDateThisMonth.plusMonths(1);
-
-        // 5) D-day 계산 (절대 음수 방지)
         int dDay = (int) ChronoUnit.DAYS.between(now, nextBillingDate);
         return Math.max(dDay, 0);
     }
@@ -93,7 +92,7 @@ public class SubscribeService {
         subscribe.setUserId(1);
 //        return subscribeRepository.save(subscribe);
         Subscribe updated = subscribeRepository.save(subscribe);
-        return SubscribeResponseDto.from(updated, calculateDday(updated.getStartDate()));
+        return SubscribeResponseDto.from(updated, calculateDday(updated.getStartDate(), updated.getPeriod(), updated.getPeriodUnit()));
     }
 
     public SubscribeResponseDto save(SubscribeRequestDto subscribeRequestDto) {
@@ -137,7 +136,7 @@ public class SubscribeService {
 
 //        return subscribeRepository.save(subscribe);
         Subscribe saved = subscribeRepository.save(subscribe);
-        int dDay = calculateDday(saved.getStartDate());
+        int dDay = calculateDday(saved.getStartDate(), saved.getPeriod(), saved.getPeriodUnit());
         return SubscribeResponseDto.from(saved, dDay);
     }
 
@@ -148,7 +147,7 @@ public class SubscribeService {
         List<Subscribe> subscribeList = subscribeRepository.findAllByUserIdAndCategory(1, category);
 
         List<SubscribeResponseDto> result = subscribeList.stream()
-                .map(sub -> SubscribeResponseDto.from(sub, calculateDday(sub.getStartDate())))
+                .map(sub -> SubscribeResponseDto.from(sub, calculateDday(sub.getStartDate(), sub.getPeriod(), sub.getPeriodUnit())))
                 .toList();
 
         int totalCount = result.size();
