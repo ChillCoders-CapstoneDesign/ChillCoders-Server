@@ -54,7 +54,7 @@ public class SubscribeService {
     }
 
     //    디데이 계산
-    private int calculateDday(LocalDate startDate, Integer period, String periodUnit) {
+    public int calculateDday(LocalDate startDate, Integer period, String periodUnit) {
         if (startDate == null || period == null || period <= 0 || periodUnit == null) {
             return 0;
         }
