@@ -64,12 +64,21 @@ public class SubscribeService {
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         // 반복 결제일: 매달 startDate의 day에 결제된다고 가정한다.
-        LocalDate nextBillingDate = startDate;
+//        LocalDate nextBillingDate = startDate;
 
         // 현재 날짜 이후의 가장 가까운 결제일을 찾는다.
-        while (!nextBillingDate.isAfter(now)) {
-            nextBillingDate = nextBillingDate.plusMonths(1);
-        }
+//        while (!nextBillingDate.isAfter(now)) {
+//            nextBillingDate = nextBillingDate.plusMonths(1);
+//        }
+
+        long monthsSinceStart = ChronoUnit.MONTHS.between(startDate, now);
+
+        LocalDate billingDateThisMonth = startDate.plusMonths(monthsSinceStart);
+        
+        LocalDate nextBillingDate = billingDateThisMonth.isAfter(now)
+                ? billingDateThisMonth
+                : billingDateThisMonth.plusMonths(1);
+
         int dDay = (int) ChronoUnit.DAYS.between(now, nextBillingDate);
         return Math.max(dDay, 0); // 음수 방지
     }
