@@ -96,7 +96,7 @@ public class SubscribeService {
         return SubscribeResponseDto.from(updated, calculateDday(updated.getStartDate()));
     }
 
-    public Subscribe save(SubscribeRequestDto subscribeRequestDto) {
+    public SubscribeResponseDto save(SubscribeRequestDto subscribeRequestDto) {
         Category category;
 
         // 데이터베이스에 등록된 서비스명 확인
@@ -135,7 +135,10 @@ public class SubscribeService {
                 .userId(1) //userId 1로 하드코딩
                 .build();
 
-        return subscribeRepository.save(subscribe);
+//        return subscribeRepository.save(subscribe);
+        Subscribe saved = subscribeRepository.save(subscribe);
+        int dDay = calculateDday(saved.getStartDate());
+        return SubscribeResponseDto.from(saved, dDay);
     }
 
 //    카테고리별 목록조회

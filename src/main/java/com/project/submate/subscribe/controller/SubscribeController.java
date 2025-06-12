@@ -54,8 +54,10 @@ public class SubscribeController {
     @Operation(summary = "구독 서비스를 새로 등록", description = "기존 서비스에 없던 구독 서비스를 사용자(userId=1)가 새로 등록한다.")
     @PostMapping("/create")
     public ResponseEntity<SubscribeResponseDto> create(@RequestBody SubscribeRequestDto subscribeRequestDto){
-        Subscribe saved = subscribeService.save(subscribeRequestDto);
-        return ResponseEntity.ok(SubscribeResponseDto.from(saved));
+//        Subscribe saved = subscribeService.save(subscribeRequestDto);
+//        return ResponseEntity.ok(SubscribeResponseDto.from(saved));
+        SubscribeResponseDto savedDto = subscribeService.save(subscribeRequestDto);
+        return ResponseEntity.ok(savedDto);
     }
 
 //    카테고리별 구독서비스 목록조회
