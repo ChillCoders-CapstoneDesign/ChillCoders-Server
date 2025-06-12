@@ -42,7 +42,7 @@ public class SubscribeController {
                 subscribe.getPeriod(),
                 subscribe.getPeriodUnit()
         );
-        
+
         return ResponseEntity.ok(SubscribeResponseDto.from(subscribe, dDay));
     }
 
