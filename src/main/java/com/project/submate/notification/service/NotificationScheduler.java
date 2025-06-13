@@ -16,7 +16,7 @@ public class NotificationScheduler {
     private final SubscribeRepository subscribeRepository;
     private final NotificationService notificationService;
 
-    @Scheduled(cron = "0 0 9 * * *")  // 매일 오전 9시(한국시간아님)
+    @Scheduled(cron = "0 0 9 * * *")  // 스케줄-매일 오전 9시(한국시간아님)
     public void checkNotifications() {
         System.out.println("Scheduler 실행 시작");
 
