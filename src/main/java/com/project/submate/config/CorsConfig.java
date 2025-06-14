@@ -16,7 +16,8 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:3000",
-                                "https://chill-coders-web-8cel.vercel.app"
+                                "https://chill-coders-web-8cel.vercel.app",
+                                "https://balanced-united-famous-copied.trycloudflare.com"
                         )
                         .allowedMethods("*")
                         .allowedHeaders("*")
